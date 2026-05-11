@@ -201,5 +201,11 @@ class ToolRegistry {
         RemindersTools.register(into: self)
         ContactsTools.register(into: self)
         HealthTools.register(into: self)
+        // 新增: 记忆系统工具
+        MemoryTools.register(into: self)
+        // 新增: GitHub 和网络工具
+        GitHubTools.register(into: self)
+        // 新增: 文档生成工具
+        DocumentTools.register(into: self)
     }
 }
