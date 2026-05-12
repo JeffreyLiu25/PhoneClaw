@@ -13,7 +13,7 @@ public struct ProcessedFrames {
     public let totalDuration: CMTime
 }
 
-private let context = CIContext()
+
 
 /// Collection of methods for processing media (images, video, etc.).
 ///
@@ -170,6 +170,7 @@ public enum MediaProcessing {
 
         var data = Data(count: w * h * bytesPerPixel)
         data.withUnsafeMutableBytes { ptr in
+            let context = CIContext()
             context.render(
                 image, toBitmap: ptr.baseAddress!, rowBytes: bytesPerRow, bounds: image.extent,
                 format: format, colorSpace: colorSpace)
