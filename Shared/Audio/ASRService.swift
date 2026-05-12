@@ -361,9 +361,9 @@ class ASRService {
         let suppressCount = (json["suppress_tokens"] as? [Int])?.count ?? -1
         let multilingualLabel: String = {
             switch isMultilingual {
-            case true: return "✅ multilingual"
-            case false: return "❌ English-only"
-            case nil: return "⚠️ unspecified"
+            case .some(true): return "✅ multilingual"
+            case .some(false): return "❌ English-only"
+            case .none: return "⚠️ unspecified"
             }
         }()
         print("[ASR] Model variant check: \(multilingualLabel)" +
