@@ -70,7 +70,7 @@ class LiveAudioIO {
     func start() throws {
         let session = AVAudioSession.sharedInstance()
         try session.setCategory(.playAndRecord, mode: .voiceChat,
-                                 options: [.defaultToSpeaker, .allowBluetoothHFP])
+                                 options: [.defaultToSpeaker, .allowBluetooth])
         try session.setActive(true)
 
         // 监听音频中断（下拉控制中心、来电、Siri 等）

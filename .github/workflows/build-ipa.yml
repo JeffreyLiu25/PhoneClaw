@@ -1,0 +1,61 @@
+name: Build PhoneClaw IPA
+
+on:
+  push:
+    branches: [ main, master, trae/solo-agent-ZhlEuX ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('Podfile.lock') }}
+          restore-keys: ${{ runner.os }}-pods-
+          
+      - name: Install dependencies
+        run: |
+          gem install cocoapods xcodeproj
+          pod install --repo-update
+          
+      - name: Try to add new files to Xcode project
+        run: |
+          echo "Attempting to add new files..."
+          ls -la Agent/Memory/ Tools/Network/ Tools/Documentation/
+          ls -la
+          # 暂不添加，先让基础构建跑通
+          echo "Skip for now - will add files manually later"
+
+          
+      - name: Build IPA (unsigned)
+        run: |
+          xcodebuild -workspace PhoneClaw.xcworkspace \
+            -scheme PhoneClaw \
+            -configuration Release \
+            -derivedDataPath ./build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            clean build
+          
+      - name: Archive and export IPA
+        run: |
+          mkdir -p Payload
+          cp -r build/Build/Products/Release-iphoneos/PhoneClaw.app Payload/
+          zip -r PhoneClaw.ipa Payload/
+          
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PhoneClaw-IPA
+          path: PhoneClaw.ipa
+          retention-days: 30
